@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">AppShortcuts</string>
+    <string name="settings_shortcut_short_label">Settings</string>
+    <string name="settings_shortcut_long_label">Settings</string>
+    <string name="settings_shortcut_disabled_msg">Setting is disabled as </string>
+
+    <string name="call_us_shortcut_short_label">Call us</string>
+    <string name="call_us_shortcut_long_label">Call us to update your details</string>
+    <string name="call_us_shortcut_disabled_msg">Call us is disabled as you do not have calling feature</string>
+    <string name="add_call_us_shortcut">Add Call us</string>
+    <string name="remove_call_us_shortcut">Remove Call us</string>
+
+    <string name="shortcut_was_added_please_remove_by_clicking_remove_button">Call us Shortcut was added. To view go to app launcher and long press. To remove it, click the button below</string>
+    <string name="shortcut_was_not_added">To add call us shortcut to app icon, press below button</string>
+    <string name="settings_text">Settings</string>
+
+</resources>
