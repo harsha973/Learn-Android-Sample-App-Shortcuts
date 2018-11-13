@@ -9,6 +9,7 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.support.annotation.RequiresApi
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,11 +27,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // INIT SHORTCUT MANAGER
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            configureViews()
-            configureShortCutManager()
+            initShortCuts()
+        } else {
+            updateShortcutNotSupportedTextAndHideButton()
         }
+    }
+
+    private fun updateShortcutNotSupportedTextAndHideButton() {
+        callusShortcutButton.visibility = View.GONE
+        callusShortcutTextView.setText(R.string.shortcut_not_supported)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private fun initShortCuts() {
+        configureShortCutManager()
+        if (hasNoShortCuts()) {
+            createDynamicShortcuts()
+        }
+        configureCallUsViews()
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
@@ -39,10 +54,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun configureViews() {
-        when(hasNoShortCuts()) {
-            true -> showAddShortCutData()
-            else -> showRemoveShortCutData()
+    private fun configureCallUsViews() {
+        when(hasCallusShortCut()) {
+            true -> showRemoveShortCutData()
+            else -> showAddShortCutData()
         }
     }
 
@@ -51,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         callusShortcutButton.setText(R.string.add_call_us_shortcut)
         callusShortcutTextView.setText(R.string.shortcut_was_not_added)
         callusShortcutButton.setOnClickListener {
-            createDynamicShortcut()
+            createDynamicShortcuts()
             showRemoveShortCutData()
         }
     }
@@ -61,14 +76,14 @@ class MainActivity : AppCompatActivity() {
         callusShortcutButton.setText(R.string.remove_call_us_shortcut)
         callusShortcutTextView.setText(R.string.shortcut_was_added_please_remove_by_clicking_remove_button)
         callusShortcutButton.setOnClickListener {
-            removeDynamicShortcut()
+            removeCallusShortcut()
             showAddShortCutData()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun removeDynamicShortcut() {
-        shortcutManager?.disableShortcuts(listOf(contactUsShortcutInfo().id) )
+    private fun removeCallusShortcut() {
+        shortcutManager?.disableShortcuts(listOf(callusShortCutID) )
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
@@ -78,26 +93,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
-    private fun createDynamicShortcut() {
-        shortcutManager?.dynamicShortcuts = Arrays.asList(contactUsShortcutInfo())
+    private fun hasCallusShortCut(): Boolean
+        = shortcutManager?.dynamicShortcuts?.any { it.id == callusShortCutID } ?: false
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private fun createDynamicShortcuts() {
+        shortcutManager?.addDynamicShortcuts(getDynamicShortCutList())
     }
 
-    /**
-     * Create a dummy [ShortcutInfo] object
-     * @return A dummy [ShortcutInfo] object
-     */
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private fun getDynamicShortCutList() = Arrays.asList(contactUsShortcutInfo(), showProfileShortcutInfo())
+
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun contactUsShortcutInfo(): ShortcutInfo {
         // dial this number when the shortcut was selected
         val contactUsUri = Uri.parse("tel:1111111")
 
-        return ShortcutInfo.Builder(this, SHORTCUT_CALL_US_ID)
+        return ShortcutInfo.Builder(this, callusShortCutID)
             .setShortLabel(getString(R.string.call_us_shortcut_short_label))
             .setLongLabel(getString(R.string.call_us_shortcut_long_label))
+            .setDisabledMessage(getString(R.string.call_us_shortcut_disabled_msg))
             .setIcon(Icon.createWithResource(this, R.drawable.ic_call_black_24dp))
             .setIntent(Intent(Intent.ACTION_DIAL, contactUsUri))
             .build()
     }
 
-    private val SHORTCUT_CALL_US_ID = "CALLUS"
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private fun showProfileShortcutInfo(): ShortcutInfo {
+        val intent = Intent(this, ProfileActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        return ShortcutInfo.Builder(this, showProfileShortCutID)
+            .setShortLabel(getString(R.string.show_profile_shortcut_short_label))
+            .setLongLabel(getString(R.string.show_profile_shortcut_long_label))
+            .setIcon(Icon.createWithResource(this, R.drawable.ic_person_black_24dp))
+            .setIntent(intent)
+            .build()
+    }
+
+    private val callusShortCutID = "CALLUS"
+    private val showProfileShortCutID = "ShowProfile"
 }

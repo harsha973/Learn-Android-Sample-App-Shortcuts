@@ -7,11 +7,19 @@
     <string name="call_us_shortcut_short_label">Call us</string>
     <string name="call_us_shortcut_long_label">Call us to update your details</string>
     <string name="call_us_shortcut_disabled_msg">Call us is disabled as you do not have calling feature</string>
+
+    <string name="show_profile_shortcut_short_label">Show profile</string>
+    <string name="show_profile_shortcut_long_label">Update profile information</string>
+    <string name="show_profile_shortcut_disabled_msg">Unauthorised access</string>
+
     <string name="add_call_us_shortcut">Add Call us</string>
     <string name="remove_call_us_shortcut">Remove Call us</string>
 
     <string name="shortcut_was_added_please_remove_by_clicking_remove_button">Call us Shortcut was added. To view go to app launcher and long press. To remove it, click the button below</string>
     <string name="shortcut_was_not_added">To add call us shortcut to app icon, press below button</string>
-    <string name="settings_text">Settings</string>
 
+    <string name="settings_text">Settings</string>
+    <string name="profile_text">Profile</string>
+
+    <string name="shortcut_not_supported">Your device does not support App shotcuts. Shortcuts are supported in Nougat 7.1 and above.</string>
 </resources>
