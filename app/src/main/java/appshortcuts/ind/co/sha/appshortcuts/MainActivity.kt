@@ -12,6 +12,9 @@ import android.support.annotation.RequiresApi
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -27,11 +30,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        initAppCenter()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             initShortCuts()
         } else {
             updateShortcutNotSupportedTextAndHideButton()
         }
+    }
+
+    private fun initAppCenter() {
+        AppCenter.start(
+            application, "609587bd-728c-4b6a-b447-cc82de5f2b91",
+            Analytics::class.java, Crashes::class.java
+        )
     }
 
     private fun updateShortcutNotSupportedTextAndHideButton() {
